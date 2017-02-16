@@ -260,7 +260,7 @@ class ElasticSearchUtilsTestCase(unittest.TestCase):
     def test_send_to_elastic_POST_failed_connection(self, mock_get_obj_info, mock_url):
 
         client = self.client.return_value
-        client.post.side_effect = Exception 
+        client.post.side_effect = Exception
 
         # Mocked result from _get_es_obj_url
         mock_url.return_value = 'obj-url'
@@ -278,7 +278,7 @@ class ElasticSearchUtilsTestCase(unittest.TestCase):
         es = ElasticSearchUtils('token_url', 'cli_id', 'cli_sec', 'es_url')
 
         msg, status = es.send_to_elastic(self.data)
-        
+
         client.post.assert_called_with(
             'obj-url',
             data=json.dumps(obj_info),
@@ -320,7 +320,7 @@ class ElasticSearchUtilsTestCase(unittest.TestCase):
     def test_send_to_elastic_DELETE_failed_connection(self, mock_get_obj_info, mock_url):
 
         client = self.client.return_value
-        client.delete.side_effect = Exception 
+        client.delete.side_effect = Exception
 
         # Mocked result from _get_es_obj_url
         mock_url.return_value = 'obj-url'
@@ -459,31 +459,31 @@ class WorkerTestCase(unittest.TestCase):
             },
             'timestamp': '2017-02-02T16:53:33.355817'
         })
-        
+
         self.method = collections.namedtuple('Method', 'delivery_tag')
         self.channel = Mock()
-        
+
     def tearDown(self):
         patch.stopall()
 
     @patch('swift_search_worker.worker.elastic_utils')
     def test_callback_called_with_invalid_data(self, mock_elastic_utils):
         mock_elastic_utils.send_to_elastic.side_effect = ValueError
-        method = self.method(delivery_tag='delivered') 
+        method = self.method(delivery_tag='delivered')
         callback(self.channel, method, None, self.data)
         self.log.error.called_with('Invalid message')
 
     @patch('swift_search_worker.worker.elastic_utils')
     def test_message_acknowledged(self, mock_elastic_utils):
         mock_elastic_utils.send_to_elastic.return_value = "", True
-        method = self.method(delivery_tag='delivered') 
+        method = self.method(delivery_tag='delivered')
         callback(self.channel, method, None, self.data)
         self.channel.basic_ack.assert_called_with(delivery_tag='delivered')
 
     @patch('swift_search_worker.worker.elastic_utils')
     def test_message_failed(self, mock_elastic_utils):
         mock_elastic_utils.send_to_elastic.return_value = "generic error message", False
-        method = self.method(delivery_tag='delivered') 
+        method = self.method(delivery_tag='delivered')
         callback(self.channel, method, None, self.data)
         self.log.error.called_with('Failed to create message on Elastic Search')
 

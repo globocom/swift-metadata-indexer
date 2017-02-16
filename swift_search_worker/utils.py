@@ -133,7 +133,7 @@ class ElasticSearchUtils(object):
         if res.status_code in [200, 201] or \
            (data['http_method'] == 'DELETE' and res.status_code == 404):
             return "", True
-        else: 
+        else:
             return "Object not created", False
 
     def _get_es_obj_url(self, obj_info):
