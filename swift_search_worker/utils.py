@@ -142,7 +142,7 @@ class ElasticSearchUtils(object):
                            obj_info.get('container'),
                            obj_info.get('object')])
 
-        return self.es_url + '/' + urllib.quote_plus(obj_id)
+        return self.es_url + '/' + urllib.parse.quote_plus(obj_id)
 
     def get_alf_client(self):
         # alf is an OAuth 2 Client
